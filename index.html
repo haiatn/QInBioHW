@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+    Alternative Splicing Similarities In Transcripts
+    </title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!--    <script src="https://d3js.org/d3.v4.js"></script>-->
+    <script src="controller.js"></script>
+    <script src="Comparison.js"></script>
+    <script src="Drawer.js"></script>
+     <script src="BetweenTranscriptsComparator.js"></script>
+
+</head>
+<body>
+    <div>
+        Search For Similarity In Two Transcripts:
+        <br>
+        <table>
+<!--
+        <tr>
+            <td>Species</td>
+            <td><input></td>
+        </tr>
+            <tr>
+                 <td>Gene</td>
+            <td><input></td>
+            </tr>
+-->
+            <tr>
+                 <td>Transcript 1</td>
+            <td><input id="search1Transcript1" value="XM_006533549.3"></td>
+            </tr>
+            <tr>
+                 <td>Transcript 2</td>
+            <td><input id="search1Transcript2" value="NM_001033537.2"></td>
+            </tr>
+        </table>
+        <input type="button" value="Search" onClick="similarityBetweenTranscripts()">
+    </div>
+    <div>
+        Search For Similarity In All Transcripts Of Gene In A Specific Species:
+        <br>
+         <table>
+        <tr>
+            <td>Species</td>
+            <td><input></td>
+        </tr>
+            <tr>
+                 <td>Gene</td>
+            <td><input></td>
+            </tr>
+        </table>
+        <input type="button">
+    </div>
+    <div>
+        Search For Similarity In All Transcripts In Gene:
+        <br>
+          <table>
+            <tr>
+                 <td>Gene</td>
+            <td><input></td>
+            </tr>
+        </table>
+        <input type="button">
+    </div>
+    <div style="background-color: white">
+        Results:
+       <div id="graphVisualization"></div>
+    </div>
+</body>
+</html>
