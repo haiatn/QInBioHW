@@ -8,10 +8,15 @@ class BetweenTranscriptsComparator {
         var analyzed2 = this.analyzeTranscript(secondElement);
 
         //attribute comparison
+        var attributeCompare=[];
         var TXStartChange = Math.abs(analyzed1.TXStart - analyzed2.TXStart);
         var TXEndChange = Math.abs(analyzed1.TXEnd - analyzed2.TXEnd);
         var CDSStartChange = Math.abs(analyzed1.CDSStart - analyzed2.CDSStart);
         var CDSEndChange = Math.abs(analyzed1.CDSEnd - analyzed2.CDSEnd);
+        attributeCompare.push({"title":"TX Start Difference","value":TXStartChange});
+        attributeCompare.push({"title":"TX End Difference","value":TXEndChange});
+        attributeCompare.push({"title":"CDS Start Difference","value":CDSStartChange});
+        attributeCompare.push({"title":"CDS End Difference","value":CDSEndChange});
 
         //domain similarity
         var commonDomains = 0;
@@ -24,18 +29,23 @@ class BetweenTranscriptsComparator {
         }
         var allDomains = analyzed1.domainTypes.length + analyzed2.domainTypes.length - commonDomains;
         var domainTypeSimilarity = commonDomains / allDomains;
+        attributeCompare.push({"title":"Domain Similarity","value":(domainTypeSimilarity*100)+"%"});
 
 
         //exon similarity
         var resultMatrix = this.getExonSimilarity(analyzed1, analyzed2);
+        var totalExonSimilarity=this.getTotalExonSimilarity(resultMatrix);
+        attributeCompare.push({"title":"Exon Similarity","value":totalExonSimilarity});
 
-
-        return resultMatrix;
+        //names
+        var names=analyzed1.name+"\\"+analyzed2.name
+        return {"resultMatrix":resultMatrix,"attributeCompare":attributeCompare,'names':names};
 
     }
 
     analyzeTranscript(element) {
         var features = {};
+        features.name = element.name;
         features.CDSStart = element.cds_start;
         features.CDSEnd = element.cds_end;
         features.TXStart = element.tx_start;
@@ -92,14 +102,17 @@ class BetweenTranscriptsComparator {
                 //                }
                 var A = this.getCoordinatesMeasure(exons1[i].genomic_start_tx, exons1[i].genomic_end_tx, exons2[j].genomic_start_tx,
                     exons2[j].genomic_end_tx);
-                var B = this.getLengthMeasure(exons1[i].genomic_start_tx, exons1[i].genomic_end_tx, exons2[j].genomic_start_tx,
-                    exons2[j].genomic_end_tx);
+
+                var B = this.getLengthMeasure(exons1[i].abs_start_CDS, exons1[i].abs_end_CDS, exons2[j].abs_start_CDS,
+                    exons2[j].abs_end_CDS);
+
 
                 var C = this.getDomainMeasure(exons1[i].domainTypes, exons2[j].domainTypes);
+
                 if (A == 1) {
                     results[i][j] = 3;
                 } else {
-                    results[i][j] = A + 0.5 * B + C;
+                    results[i][j] = A + B + C;
                 }
 
 
@@ -128,33 +141,10 @@ class BetweenTranscriptsComparator {
     getLengthMeasure(start1, end1, start2, end2) {
         var length1 = end1 - start1;
         var length2 = end2 - start2;
-        var measure = -1;
-        if (length2 >= length1) {
-            measure = length2 / length1;
-        } else {
-            measure = length1 / length2;
-        }
-        if (measure >= 2) {
-            return 0;
-        } else {
+        if (length1==length2 && length1!=0) {
             return 1;
-        }
-
-    }
-
-    getLengthMeasure(start1, end1, start2, end2) {
-        var length1 = end1 - start1;
-        var length2 = end2 - start2;
-        var measure = -1;
-        if (length2 >= length1) {
-            measure = length2 / length1;
         } else {
-            measure = length1 / length2;
-        }
-        if (measure >= 2) {
             return 0;
-        } else {
-            return 1;
         }
 
     }
@@ -172,6 +162,23 @@ class BetweenTranscriptsComparator {
             }
         }
         return common / (arr1.length + arr2.length - common); //union after deleting duplicates from array2
+    }
+
+    getTotalExonSimilarity(resultMatrix){
+        var totalExons=resultMatrix.length+resultMatrix[0].length;
+        var sum=0;
+        for(var i=0; i<resultMatrix.length;i++){
+            sum=sum+Math.max(...resultMatrix[i]);
+        }
+
+        for(var j=0; j<resultMatrix[0].length;j++){
+            var colVal=[];
+            for(var i=0; i<resultMatrix.length;i++){
+                colVal.push(resultMatrix[i][j]);
+            }
+            sum=sum+Math.max(...colVal);
+        }
+        return (sum*100)/(totalExons*3);
     }
 
 

@@ -9,7 +9,13 @@
     <script src="controller.js"></script>
     <script src="Comparison.js"></script>
     <script src="Drawer.js"></script>
+
+    <script src="BetweenGenesComparator.js"></script>
+    <script src="BetweenGenesDrawer.js"></script>
+
+    <script src="BetweenGenesInSpeciesDrawer.js"></script>
      <script src="BetweenTranscriptsComparator.js"></script>
+     <script src="BetweenGenesInSpeciesComparator.js"></script>
 
 </head>
 <body>
@@ -29,11 +35,11 @@
 -->
             <tr>
                  <td>Transcript 1</td>
-            <td><input id="search1Transcript1" value="XM_006533549.3"></td>
+            <td><input id="search1Transcript1" value="NM_001014840.1"></td>
             </tr>
             <tr>
                  <td>Transcript 2</td>
-            <td><input id="search1Transcript2" value="NM_001033537.2"></td>
+            <td><input id="search1Transcript2" value="NM_015921.2"></td>
             </tr>
         </table>
         <input type="button" value="Search" onClick="similarityBetweenTranscripts()">
@@ -44,14 +50,14 @@
          <table>
         <tr>
             <td>Species</td>
-            <td><input></td>
+            <td><input id="search2Species" value="H_sapiens"></td>
         </tr>
             <tr>
                  <td>Gene</td>
-            <td><input></td>
+            <td><input id="search2Gene" value="cuta"></td>
             </tr>
         </table>
-        <input type="button">
+        <input type="button" value="Search" onclick="similarityBetweenGenesInSpecies()">
     </div>
     <div>
         Search For Similarity In All Transcripts In Gene:
@@ -59,10 +65,10 @@
           <table>
             <tr>
                  <td>Gene</td>
-            <td><input></td>
+            <td><input id="search3Gene" value="cuta"></td>
             </tr>
-        </table>
-        <input type="button">
+        </table >
+        <input type="button" value="Search" onclick="similarityBetweenGenes()">
     </div>
     <div style="background-color: white">
         Results:
