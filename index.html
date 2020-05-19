@@ -8,7 +8,7 @@
 <!--    <script src="https://d3js.org/d3.v4.js"></script>-->
     <script src="controller.js"></script>
     <script src="Comparison.js"></script>
-    <script src="Drawer.js"></script>
+    <script src="BetweenTranscriptsDrawer.js"></script>
 
     <script src="BetweenGenesComparator.js"></script>
     <script src="BetweenGenesDrawer.js"></script>
@@ -20,19 +20,38 @@
 </head>
 <body>
     <div>
-        Search For Similarity In Two Transcripts:
         <br>
+        you can adjust weights for our 3 measures:<br>
         <table>
-<!--
         <tr>
-            <td>Species</td>
-            <td><input></td>
-        </tr>
-            <tr>
-                 <td>Gene</td>
-            <td><input></td>
+            <td>
+            exon genomic coordinates overlap:</td>
+            <td>
+            <input type="text" value="1" id="weights1">
+            </td>
             </tr>
--->
+
+            <tr>
+            <td>
+            exon length in CDS:</td>
+            <td>
+            <input type="text" value="1" id="weights2">
+            </td>
+            </tr>
+
+            <tr>
+            <td>
+            domain similarity:</td>
+            <td>
+            <input type="text" value="1" id="weights3">
+            </td>
+            </tr>
+        </table>
+        <br>
+        <br>
+        Search For Similarity In Two Transcripts:
+        <table>
+
             <tr>
                  <td>Transcript 1</td>
             <td><input id="search1Transcript1" value="NM_001014840.1"></td>

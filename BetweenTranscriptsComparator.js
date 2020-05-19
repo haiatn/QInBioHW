@@ -3,7 +3,7 @@ class BetweenTranscriptsComparator {
 
     }
 
-    compare(firstElement, secondElement) {
+    compare(firstElement, secondElement,weights) {
         var analyzed1 = this.analyzeTranscript(firstElement);
         var analyzed2 = this.analyzeTranscript(secondElement);
 
@@ -33,7 +33,7 @@ class BetweenTranscriptsComparator {
 
 
         //exon similarity
-        var resultMatrix = this.getExonSimilarity(analyzed1, analyzed2);
+        var resultMatrix = this.getExonSimilarity(analyzed1, analyzed2,weights);
         var totalExonSimilarity=this.getTotalExonSimilarity(resultMatrix);
         attributeCompare.push({"title":"Exon Similarity","value":totalExonSimilarity});
 
@@ -85,21 +85,16 @@ class BetweenTranscriptsComparator {
 
         return features; //element.exon_count;
     }
-    getExonSimilarity(firstElement, secondElement, spliceInDomains) {
+    getExonSimilarity(firstElement, secondElement,weights) {
         let exons1 = firstElement.transcriptExons.sort(this.exonOrder);
-        //        let domains1=firstElement.domains;
         let exons2 = secondElement.transcriptExons.sort(this.exonOrder);
-        //        let domains2=secondElement.domains;
         let results = [];
+        let weightSum=weights[0] + weights[1] + weights[2];
+
         for (var i = 0; i < exons1.length; i++) {
             results[i] = [];
             for (var j = 0; j < exons2.length; j++) {
-                //                if(exons1[i].genomic_start_tx==exons2[j].genomic_start_tx && exons1[i].genomic_end_tx==exons2[j].genomic_end_tx){
-                //                    results[i][j]=1;
-                //                }
-                //                else{
-                //                    results[i][j]=0;
-                //                }
+
                 var A = this.getCoordinatesMeasure(exons1[i].genomic_start_tx, exons1[i].genomic_end_tx, exons2[j].genomic_start_tx,
                     exons2[j].genomic_end_tx);
 
@@ -110,11 +105,10 @@ class BetweenTranscriptsComparator {
                 var C = this.getDomainMeasure(exons1[i].domainTypes, exons2[j].domainTypes);
 
                 if (A == 1) {
-                    results[i][j] = 3;
+                    results[i][j]= ( 1*weights[0] + 1*weights[1] + 1*weights[2])/weightSum;
                 } else {
-                    results[i][j] = A + B + C;
+                    results[i][j]= (A*weights[0] + B*weights[1] + C*weights[2])/weightSum;
                 }
-
 
             }
         }
@@ -178,7 +172,7 @@ class BetweenTranscriptsComparator {
             }
             sum=sum+Math.max(...colVal);
         }
-        return (sum*100)/(totalExons*3);
+        return (sum*100)/(totalExons);
     }
 
 

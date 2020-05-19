@@ -1,22 +1,28 @@
  async function similarityBetweenTranscripts(){
     var transcript1=$('#search1Transcript1').val();
     var transcript2=$('#search1Transcript2').val();
-    comparison=new Comparison(await transcriptFromDatebase(transcript1),await transcriptFromDatebase(transcript2),new BetweenTranscriptsComparator(),new Drawer())
+    var weights=parseWeights();
+
+    comparison=new Comparison(await transcriptFromDatebase(transcript1),await transcriptFromDatebase(transcript2),new BetweenTranscriptsComparator(),new BetweenTranscriptsDrawer(),weights)
     comparison.search();
 }
 
 async function similarityBetweenGenesInSpecies(){
     var species=$('#search2Species').val();
     var gene=$('#search2Gene').val();
+    var weights=parseWeights();
+
     gene= await geneFromDatebase(gene,species);
-    comparison=new Comparison(gene,gene,new BetweenGenesInSpeciesComparator(),new BetweenGenesInSpeciesDrawer())
+    comparison=new Comparison(gene,gene,new BetweenGenesInSpeciesComparator(),new BetweenGenesInSpeciesDrawer(),weights)
     comparison.search();
 }
 
 async function similarityBetweenGenes(){
     var gene=$('#search3Gene').val();
+    var weights=parseWeights();
+
     gene= await allGenesFromDatebase(gene);
-    comparison=new Comparison(gene,gene,new BetweenGenesComparator(),new BetweenGenesDrawer())
+    comparison=new Comparison(gene,gene,new BetweenGenesComparator(),new BetweenGenesDrawer(),weights)
     comparison.search();
 }
 
@@ -62,4 +68,12 @@ async function allGenesFromDatebase(gene){
     }
     );
     return gene.genes;
+}
+
+function parseWeights(){
+
+
+    return [parseInt($('#weights1').val()),
+            parseInt($('#weights2').val()),
+            parseInt($('#weights3').val())]
 }
