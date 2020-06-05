@@ -38,12 +38,13 @@ async function transcriptFromDatebase(transcript_id){
     gene=gene.genes[0];
     transcript=undefined;
     for(var i=0; i<gene.transcripts.length;i++){
-        if(gene.transcripts[i].transcript_id==transcript_id){
+        if(gene.transcripts[i].transcript_refseq_id==transcript_id||
+          gene.transcripts[i].transcript_ensembl_id==transcript_id){
             transcript=gene.transcripts[i];
 
         }
     }
-    transcript.name=transcript_id;
+    addName(transcript)
     return transcript;
 }
 async function geneFromDatebase(gene,species){
@@ -55,6 +56,9 @@ async function geneFromDatebase(gene,species){
        return data;
     }
     );
+    for(var i=0; i<gene.genes[0].transcripts.length;i++){
+        addName(gene.genes[0].transcripts[i]);
+    }
     return gene.genes[0];
     }
 
@@ -76,4 +80,21 @@ function parseWeights(){
     return [parseInt($('#weights1').val()),
             parseInt($('#weights2').val()),
             parseInt($('#weights3').val())]
+}
+
+function addName(transcript){
+    ensemblName=transcript.transcript_ensembl_id;
+    refseqName=transcript.transcript_refseq_id;
+    if(ensemblName!=undefined){
+
+        if(refseqName!=undefined){
+            transcript.name=refseqName+" "+ensemblName;
+        }
+        else{
+            transcript.name=ensemblName;
+        }
+    }
+    else{
+        transcript.name=refseqName;
+    }
 }
